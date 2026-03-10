@@ -4,19 +4,19 @@
     "variables": {},
     "parameters": {
         "batchAccountName": {
-            "value": "mybatchaccountwjacb"
+            "type": "string"
         },
         "location": {
-            "value": "eastus"
+            "type": "string"
         },
         "storageAccountName": {
-            "value": "mybatchaccountwjacb"
+            "type": "string"
         },
         "storageAccountType": {
-            "value": "Standard_LRS"
+            "type": "string"
         },
         "kind": {
-            "value": "Storage"
+            "type": "string"
         }
     },
     "resources": [
