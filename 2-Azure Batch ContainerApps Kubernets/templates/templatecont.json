@@ -1,0 +1,79 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "variables": {},
+  
+    "parameters": {
+  "batchAccountName": {
+    "type": "string",
+    "defaultValue": "mybatchaccountwjacb"
+  },
+  "location": {
+    "type": "string",
+    "defaultValue": "eastus"
+  },
+  "storageAccountName": {
+    "type": "string",
+    "defaultValue": "mybatchaccountwjacb"
+  },
+  "storageAccountType": {
+    "type": "string",
+    "defaultValue": "Standard_LRS"
+  },
+  "kind": {
+    "type": "string",
+    "defaultValue": "Storage"
+  }
+},
+
+
+
+    "resources": [
+        {
+            "name": "[parameters('batchAccountName')]",
+            "type": "Microsoft.Batch/batchAccounts",
+            "apiVersion": "2025-06-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts', '/', parameters('storageAccountName'))]"
+            ],
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "poolAllocationMode": "BatchService",
+                "allowedAuthenticationModes": [
+                    "AAD",
+                    "SharedKey"
+                ],
+                "networkProfile": {
+                    "accountAccess": {
+                        "defaultAction": "Allow",
+                        "ipRules": []
+                    },
+                    "nodeManagementAccess": {
+                        "defaultAction": "Allow",
+                        "ipRules": []
+                    }
+                },
+                "autoStorage": {
+                    "storageAccountId": "/subscriptions/4b135ae2-7725-4b15-a2b4-45723abb57f8/resourceGroups/AZ-305M2/providers/Microsoft.Storage/storageAccounts/mybatchaccountwjacb",
+                    "authenticationMode": "StorageKeys",
+                    "nodeIdentityReference": null
+                }
+            },
+            "identity": {
+                "type": "None"
+            },
+            "tags": {}
+        },
+        {
+            "name": "[parameters('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-01-01",
+            "location": "[parameters('location')]",
+            "kind": "[parameters('kind')]",
+            "sku": {
+                "name": "[parameters('storageAccountType')]"
+            }
+        }
+    ]
+}

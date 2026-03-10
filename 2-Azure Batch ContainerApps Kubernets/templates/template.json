@@ -1,79 +1,113 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "variables": {},
-  
-    "parameters": {
-  "batchAccountName": {
-    "type": "string",
-    "defaultValue": "mybatchaccountwjacb"
-  },
-  "location": {
-    "type": "string",
-    "defaultValue": "eastus"
-  },
-  "storageAccountName": {
-    "type": "string",
-    "defaultValue": "mybatchaccountwjacb"
-  },
-  "storageAccountType": {
-    "type": "string",
-    "defaultValue": "Standard_LRS"
-  },
-  "kind": {
-    "type": "string",
-    "defaultValue": "Storage"
-  }
-},
-
-
-
     "resources": [
         {
-            "name": "[parameters('batchAccountName')]",
-            "type": "Microsoft.Batch/batchAccounts",
-            "apiVersion": "2025-06-01",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts', '/', parameters('storageAccountName'))]"
-            ],
+            "apiVersion": "2025-07-01-preview",
+            "name": "azurefrontdoorlab",
+            "location": "Global",
             "properties": {
-                "publicNetworkAccess": "Enabled",
-                "poolAllocationMode": "BatchService",
-                "allowedAuthenticationModes": [
-                    "AAD",
-                    "SharedKey"
-                ],
-                "networkProfile": {
-                    "accountAccess": {
-                        "defaultAction": "Allow",
-                        "ipRules": []
-                    },
-                    "nodeManagementAccess": {
-                        "defaultAction": "Allow",
-                        "ipRules": []
-                    }
-                },
-                "autoStorage": {
-                    "storageAccountId": "/subscriptions/4b135ae2-7725-4b15-a2b4-45723abb57f8/resourceGroups/AZ-305M2/providers/Microsoft.Storage/storageAccounts/mybatchaccountwjacb",
-                    "authenticationMode": "StorageKeys",
-                    "nodeIdentityReference": null
-                }
+                "frontDoorId": null,
+                "originResponseTimeoutSeconds": 60,
+                "extendedProperties": {}
             },
-            "identity": {
-                "type": "None"
+            "tags": {},
+            "sku": {
+                "name": "Standard_AzureFrontDoor"
             },
-            "tags": {}
+            "type": "Microsoft.Cdn/Profiles"
         },
         {
-            "name": "[parameters('storageAccountName')]",
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2021-01-01",
-            "location": "[parameters('location')]",
-            "kind": "[parameters('kind')]",
-            "sku": {
-                "name": "[parameters('storageAccountType')]"
-            }
+            "apiVersion": "2025-07-01-preview",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/Profiles', 'azurefrontdoorlab')]"
+            ],
+            "name": "azurefrontdoorlab/epcontwjacb",
+            "location": "Global",
+            "properties": {
+                "hostName": "epcontwjacb-hqdxewb0hedvbndv.a02.azurefd.net",
+                "enabledState": "Enabled",
+                "enforceMtls": "Disabled",
+                "deploymentStatus": null
+            },
+            "type": "Microsoft.Cdn/Profiles/AfdEndpoints"
+        },
+        {
+            "apiVersion": "2025-07-01-preview",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/Profiles', 'azurefrontdoorlab')]"
+            ],
+            "name": "azurefrontdoorlab/default-origin-group",
+            "properties": {
+                "loadBalancingSettings": {
+                    "sampleSize": 4,
+                    "successfulSamplesRequired": 3,
+                    "additionalLatencyInMilliseconds": 50
+                },
+                "healthProbeSettings": {
+                    "probePath": "/",
+                    "probeRequestType": "HEAD",
+                    "probeProtocol": "Http",
+                    "probeIntervalInSeconds": 100
+                },
+                "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": null,
+                "sessionAffinityState": "Disabled",
+                "deploymentStatus": null,
+                "authentication": null
+            },
+            "type": "Microsoft.Cdn/Profiles/OriginGroups"
+        },
+        {
+            "apiVersion": "2025-07-01-preview",
+            "name": "azurefrontdoorlab/default-origin-group/default-origin",
+            "properties": {
+                "hostName": "20.121.230.28",
+                "httpPort": 80,
+                "httpsPort": 443,
+                "originHostHeader": "20.121.230.28",
+                "priority": 1,
+                "weight": 1000,
+                "enforceCertificateNameCheck": true,
+                "sharedPrivateLinkResource": null,
+                "enabledState": "Enabled",
+                "deploymentStatus": null
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/Profiles/OriginGroups', 'azurefrontdoorlab', 'default-origin-group')]"
+            ],
+            "type": "Microsoft.Cdn/Profiles/OriginGroups/Origins"
+        },
+        {
+            "apiVersion": "2025-07-01-preview",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/Profiles/AfdEndpoints', 'azurefrontdoorlab', 'epcontwjacb')]",
+                "[resourceId('Microsoft.Cdn/Profiles/OriginGroups', 'azurefrontdoorlab', 'default-origin-group')]",
+                "[resourceId('Microsoft.Cdn/Profiles/OriginGroups/Origins', 'azurefrontdoorlab', 'default-origin-group', 'default-origin')]"
+            ],
+            "name": "azurefrontdoorlab/epcontwjacb/default-route",
+            "properties": {
+                "customDomains": [],
+                "originGroup": {
+                    "id": "[resourceId('Microsoft.Cdn/Profiles/OriginGroups', 'azurefrontdoorlab', 'default-origin-group')]"
+                },
+                "originPath": null,
+                "ruleSets": [],
+                "supportedProtocols": [
+                    "Http",
+                    "Https"
+                ],
+                "patternsToMatch": [
+                    "/*"
+                ],
+                "forwardingProtocol": "MatchRequest",
+                "linkToDefaultDomain": "Enabled",
+                "httpsRedirect": "Enabled",
+                "enabledState": "Enabled",
+                "deploymentStatus": null,
+                "provisioningState": null,
+                "cacheConfiguration": null
+            },
+            "type": "Microsoft.Cdn/Profiles/AfdEndpoints/Routes"
         }
     ]
 }
