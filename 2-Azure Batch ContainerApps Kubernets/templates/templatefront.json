@@ -1,0 +1,113 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "resources": [
+        {
+            "apiVersion": "2025-07-01-preview",
+            "name": "azurefrontdoorlab",
+            "location": "Global",
+            "properties": {
+                "frontDoorId": null,
+                "originResponseTimeoutSeconds": 60,
+                "extendedProperties": {}
+            },
+            "tags": {},
+            "sku": {
+                "name": "Standard_AzureFrontDoor"
+            },
+            "type": "Microsoft.Cdn/Profiles"
+        },
+        {
+            "apiVersion": "2025-07-01-preview",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/Profiles', 'azurefrontdoorlab')]"
+            ],
+            "name": "azurefrontdoorlab/epcontwjacb",
+            "location": "Global",
+            "properties": {
+                "hostName": "epcontwjacb-hqdxewb0hedvbndv.a02.azurefd.net",
+                "enabledState": "Enabled",
+                "enforceMtls": "Disabled",
+                "deploymentStatus": null
+            },
+            "type": "Microsoft.Cdn/Profiles/AfdEndpoints"
+        },
+        {
+            "apiVersion": "2025-07-01-preview",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/Profiles', 'azurefrontdoorlab')]"
+            ],
+            "name": "azurefrontdoorlab/default-origin-group",
+            "properties": {
+                "loadBalancingSettings": {
+                    "sampleSize": 4,
+                    "successfulSamplesRequired": 3,
+                    "additionalLatencyInMilliseconds": 50
+                },
+                "healthProbeSettings": {
+                    "probePath": "/",
+                    "probeRequestType": "HEAD",
+                    "probeProtocol": "Http",
+                    "probeIntervalInSeconds": 100
+                },
+                "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": null,
+                "sessionAffinityState": "Disabled",
+                "deploymentStatus": null,
+                "authentication": null
+            },
+            "type": "Microsoft.Cdn/Profiles/OriginGroups"
+        },
+        {
+            "apiVersion": "2025-07-01-preview",
+            "name": "azurefrontdoorlab/default-origin-group/default-origin",
+            "properties": {
+                "hostName": "20.121.230.28",
+                "httpPort": 80,
+                "httpsPort": 443,
+                "originHostHeader": "20.121.230.28",
+                "priority": 1,
+                "weight": 1000,
+                "enforceCertificateNameCheck": true,
+                "sharedPrivateLinkResource": null,
+                "enabledState": "Enabled",
+                "deploymentStatus": null
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/Profiles/OriginGroups', 'azurefrontdoorlab', 'default-origin-group')]"
+            ],
+            "type": "Microsoft.Cdn/Profiles/OriginGroups/Origins"
+        },
+        {
+            "apiVersion": "2025-07-01-preview",
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/Profiles/AfdEndpoints', 'azurefrontdoorlab', 'epcontwjacb')]",
+                "[resourceId('Microsoft.Cdn/Profiles/OriginGroups', 'azurefrontdoorlab', 'default-origin-group')]",
+                "[resourceId('Microsoft.Cdn/Profiles/OriginGroups/Origins', 'azurefrontdoorlab', 'default-origin-group', 'default-origin')]"
+            ],
+            "name": "azurefrontdoorlab/epcontwjacb/default-route",
+            "properties": {
+                "customDomains": [],
+                "originGroup": {
+                    "id": "[resourceId('Microsoft.Cdn/Profiles/OriginGroups', 'azurefrontdoorlab', 'default-origin-group')]"
+                },
+                "originPath": null,
+                "ruleSets": [],
+                "supportedProtocols": [
+                    "Http",
+                    "Https"
+                ],
+                "patternsToMatch": [
+                    "/*"
+                ],
+                "forwardingProtocol": "MatchRequest",
+                "linkToDefaultDomain": "Enabled",
+                "httpsRedirect": "Enabled",
+                "enabledState": "Enabled",
+                "deploymentStatus": null,
+                "provisioningState": null,
+                "cacheConfiguration": null
+            },
+            "type": "Microsoft.Cdn/Profiles/AfdEndpoints/Routes"
+        }
+    ]
+}
