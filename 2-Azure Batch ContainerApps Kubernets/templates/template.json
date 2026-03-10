@@ -2,23 +2,32 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "variables": {},
+  
     "parameters": {
-        "batchAccountName": {
-            "value": "mybatchaccountwjacb"
-        },
-        "location": {
-            "value": "eastus"
-        },
-        "storageAccountName": {
-            "value": "mybatchaccountwjacb"
-        },
-        "storageAccountType": {
-            "value": "Standard_LRS"
-        },
-        "kind": {
-            "value": "Storage"
-        }
-    },
+  "batchAccountName": {
+    "type": "string",
+    "defaultValue": "mybatchaccountwjacb"
+  },
+  "location": {
+    "type": "string",
+    "defaultValue": "eastus"
+  },
+  "storageAccountName": {
+    "type": "string",
+    "defaultValue": "mybatchaccountwjacb"
+  },
+  "storageAccountType": {
+    "type": "string",
+    "defaultValue": "Standard_LRS"
+  },
+  "kind": {
+    "type": "string",
+    "defaultValue": "Storage"
+  }
+},
+
+
+
     "resources": [
         {
             "name": "[parameters('batchAccountName')]",
