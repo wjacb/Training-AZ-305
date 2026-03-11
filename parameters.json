@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "value": "e4a66465-7b05-400c-84a1-bb3259ab0c29"
+        },
+        "name": {
+            "value": "lappwjacb"
+        },
+        "location": {
+            "value": "Canada Central"
+        },
+        "ftpsState": {
+            "value": "FtpsOnly"
+        },
+        "storageAccountName": {
+            "value": "az305m790ba"
+        },
+        "sku": {
+            "value": "WorkflowStandard"
+        },
+        "skuCode": {
+            "value": "WS1"
+        },
+        "numberOfWorkers": {
+            "value": "1"
+        },
+        "workerSize": {
+            "value": "3"
+        },
+        "workerSizeId": {
+            "value": "3"
+        },
+        "use32BitWorkerProcess": {
+            "value": false
+        },
+        "netFrameworkVersion": {
+            "value": "v8.0"
+        },
+        "hostingPlanName": {
+            "value": "ASP-AZ305M7-8536"
+        },
+        "serverFarmResourceGroup": {
+            "value": "AZ-305M7"
+        },
+        "alwaysOn": {
+            "value": false
+        }
+    }
+}
