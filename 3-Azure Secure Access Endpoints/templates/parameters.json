@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "eastus"
+        },
+        "privateEndpointName": {
+            "value": "storageprivateendpoint"
+        },
+        "privateLinkResource": {
+            "value": "/subscriptions/52e53aef-f637-4750-9088-82136dedff07/resourceGroups/storagetest/providers/Microsoft.Storage/storageAccounts/storagetest2703"
+        },
+        "targetSubResource": {
+            "value": [
+                "blob"
+            ]
+        },
+        "requestMessage": {
+            "value": ""
+        },
+        "subnet": {
+            "value": "/subscriptions/52e53aef-f637-4750-9088-82136dedff07/resourceGroups/storagetest/providers/Microsoft.Network/virtualNetworks/storagevnet/subnets/default"
+        },
+        "virtualNetworkId": {
+            "value": "/subscriptions/52e53aef-f637-4750-9088-82136dedff07/resourceGroups/storagetest/providers/Microsoft.Network/virtualNetworks/storagevnet"
+        },
+        "subnetDeploymentName": {
+            "value": "UpdateSubnetDeployment-20260317020800"
+        },
+        "virtualNetworkResourceGroup": {
+            "value": "storagetest"
+        },
+        "privateDnsDeploymentName": {
+            "value": "PrivateDns-20260317020800"
+        }
+    }
+}
