@@ -2,181 +2,63 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "diskName": {
+            "type": "string"
+        },
         "location": {
             "type": "string"
         },
-        "privateEndpointName": {
+        "sku": {
             "type": "string"
         },
-        "privateLinkResource": {
+        "diskSizeGb": {
+            "type": "int"
+        },
+        "sourceResourceId": {
             "type": "string"
         },
-        "targetSubResource": {
-            "type": "array"
-        },
-        "requestMessage": {
+        "createOption": {
             "type": "string"
         },
-        "subnet": {
+        "hyperVGeneration": {
+            "type": "string",
+            "defaultValue": "V1"
+        },
+        "diskEncryptionSetType": {
             "type": "string"
         },
-        "virtualNetworkId": {
+        "dataAccessAuthMode": {
             "type": "string"
         },
-        "virtualNetworkResourceGroup": {
+        "networkAccessPolicy": {
             "type": "string"
         },
-        "subnetDeploymentName": {
-            "type": "string"
-        },
-        "privateDnsDeploymentName": {
+        "publicNetworkAccess": {
             "type": "string"
         }
     },
     "resources": [
         {
+            "apiVersion": "2025-01-02",
+            "type": "Microsoft.Compute/disks",
+            "name": "[parameters('diskName')]",
             "location": "[parameters('location')]",
-            "name": "[parameters('privateEndpointName')]",
-            "type": "Microsoft.Network/privateEndpoints",
-            "apiVersion": "2021-05-01",
             "properties": {
-                "subnet": {
-                    "id": "[parameters('subnet')]"
+                "creationData": {
+                    "createOption": "[parameters('createOption')]"
                 },
-                "customNetworkInterfaceName": "storageprivateendpoint-nic",
-                "privateLinkServiceConnections": [
-                    {
-                        "name": "[parameters('privateEndpointName')]",
-                        "properties": {
-                            "privateLinkServiceId": "[parameters('privateLinkResource')]",
-                            "groupIds": "[parameters('targetSubResource')]"
-                        }
-                    }
-                ]
+                "diskSizeGB": "[parameters('diskSizeGb')]",
+                "encryption": {
+                    "type": "[parameters('diskEncryptionSetType')]"
+                },
+                "dataAccessAuthMode": "[parameters('dataAccessAuthMode')]",
+                "networkAccessPolicy": "[parameters('networkAccessPolicy')]",
+                "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
             },
-            "tags": {},
-            "dependsOn": []
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "[parameters('privateDnsDeploymentName')]",
-            "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[parameters('privateEndpointName')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "apiVersion": "2017-05-10",
-                            "name": "PrivateDnsZone-b4ed7e94-831e-4cef-a9f8-5609b1aaf05e",
-                            "type": "Microsoft.Resources/deployments",
-                            "subscriptionId": "52e53aef-f637-4750-9088-82136dedff07",
-                            "resourceGroup": "storagetest",
-                            "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                                    "contentVersion": "1.0.0.0",
-                                    "resources": [
-                                        {
-                                            "type": "Microsoft.Network/privateDnsZones",
-                                            "apiVersion": "2018-09-01",
-                                            "name": "privatelink.blob.core.windows.net",
-                                            "location": "global",
-                                            "tags": {},
-                                            "properties": {}
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "VirtualNetworkLink-20260317020800",
-            "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[parameters('privateDnsDeploymentName')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "apiVersion": "2017-05-10",
-                            "name": "VirtualNetworklink-b4ed7e94-831e-4cef-a9f8-5609b1aaf05f",
-                            "type": "Microsoft.Resources/deployments",
-                            "subscriptionId": "52e53aef-f637-4750-9088-82136dedff07",
-                            "resourceGroup": "storagetest",
-                            "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                                    "contentVersion": "1.0.0.0",
-                                    "resources": [
-                                        {
-                                            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-                                            "apiVersion": "2018-09-01",
-                                            "name": "[concat('privatelink.blob.core.windows.net', '/', uniqueString(parameters('virtualNetworkId')))]",
-                                            "location": "global",
-                                            "properties": {
-                                                "virtualNetwork": {
-                                                    "id": "[parameters('virtualNetworkId')]"
-                                                },
-                                                "registrationEnabled": false
-                                            }
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "DnsZoneGroup-20260317020800",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "storagetest",
-            "dependsOn": [
-                "[parameters('privateEndpointName')]",
-                "[parameters('privateDnsDeploymentName')]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                            "apiVersion": "2021-05-01",
-                            "name": "[concat(parameters('privateEndpointName'), '/', 'default')]",
-                            "location": "[parameters('location')]",
-                            "properties": {
-                                "privateDnsZoneConfigs": [
-                                    {
-                                        "name": "privatelink-blob-core-windows-net",
-                                        "properties": {
-                                            "privateDnsZoneId": "/subscriptions/52e53aef-f637-4750-9088-82136dedff07/resourceGroups/storagetest/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            }
+            "sku": {
+                "name": "[parameters('sku')]"
+            },
+            "tags": {}
         }
     ]
 }
