@@ -5,221 +5,174 @@
         "location": {
             "type": "string"
         },
-        "networkInterfaceName": {
+        "storageAccountName": {
             "type": "string"
         },
-        "enableAcceleratedNetworking": {
+        "accountType": {
+            "type": "string"
+        },
+        "kind": {
+            "type": "string"
+        },
+        "minimumTlsVersion": {
+            "type": "string"
+        },
+        "supportsHttpsTrafficOnly": {
             "type": "bool"
         },
-        "networkSecurityGroupName": {
+        "allowBlobPublicAccess": {
+            "type": "bool"
+        },
+        "allowSharedKeyAccess": {
+            "type": "bool"
+        },
+        "defaultOAuth": {
+            "type": "bool"
+        },
+        "accessTier": {
             "type": "string"
         },
-        "networkSecurityGroupRules": {
+        "publicNetworkAccess": {
+            "type": "string"
+        },
+        "allowCrossTenantReplication": {
+            "type": "bool"
+        },
+        "networkAclsBypass": {
+            "type": "string"
+        },
+        "networkAclsDefaultAction": {
+            "type": "string"
+        },
+        "networkAclsIpRules": {
             "type": "array"
         },
-        "subnetName": {
-            "type": "string"
+        "networkAclsIpv6Rules": {
+            "type": "array"
         },
-        "virtualNetworkId": {
-            "type": "string"
-        },
-        "publicIpAddressName": {
-            "type": "string"
-        },
-        "publicIpAddressType": {
-            "type": "string"
-        },
-        "publicIpAddressSku": {
-            "type": "string"
-        },
-        "pipDeleteOption": {
-            "type": "string"
-        },
-        "virtualMachineName": {
-            "type": "string"
-        },
-        "virtualMachineComputerName": {
-            "type": "string"
-        },
-        "virtualMachineRG": {
-            "type": "string"
-        },
-        "osDiskType": {
-            "type": "string"
-        },
-        "osDiskDeleteOption": {
-            "type": "string"
-        },
-        "virtualMachineSize": {
-            "type": "string"
-        },
-        "nicDeleteOption": {
-            "type": "string"
-        },
-        "hibernationEnabled": {
+        "publishIpv6Endpoint": {
             "type": "bool"
         },
-        "adminUsername": {
+        "dnsEndpointType": {
             "type": "string"
         },
-        "adminPassword": {
-            "type": "secureString"
-        },
-        "patchMode": {
+        "keySource": {
             "type": "string"
         },
-        "enablePeriodicAssessment": {
-            "type": "string"
-        },
-        "enableHotpatching": {
+        "encryptionEnabled": {
             "type": "bool"
         },
-        "rebootSetting": {
+        "keyTypeForTableAndQueueEncryption": {
             "type": "string"
         },
-        "securityType": {
-            "type": "string"
-        },
-        "secureBoot": {
+        "infrastructureEncryptionEnabled": {
             "type": "bool"
         },
-        "vTPM": {
+        "isBlobSoftDeleteEnabled": {
             "type": "bool"
+        },
+        "blobSoftDeleteRetentionDays": {
+            "type": "int"
+        },
+        "isContainerSoftDeleteEnabled": {
+            "type": "bool"
+        },
+        "containerSoftDeleteRetentionDays": {
+            "type": "int"
+        },
+        "isShareSoftDeleteEnabled": {
+            "type": "bool"
+        },
+        "shareSoftDeleteRetentionDays": {
+            "type": "int"
         }
     },
-    "variables": {
-        "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]",
-        "vnetId": "[parameters('virtualNetworkId')]",
-        "vnetName": "[last(split(variables('vnetId'), '/'))]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"
-    },
+    "variables": {},
     "resources": [
         {
-            "name": "[parameters('networkInterfaceName')]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2022-11-01",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
-                "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]"
-            ],
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            },
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIpAddress": {
-                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]",
-                                "properties": {
-                                    "deleteOption": "[parameters('pipDeleteOption')]"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
-                "networkSecurityGroup": {
-                    "id": "[variables('nsgId')]"
-                }
-            }
-        },
-        {
-            "name": "[parameters('networkSecurityGroupName')]",
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2020-05-01",
+            "name": "[parameters('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2025-06-01",
             "location": "[parameters('location')]",
             "properties": {
-                "securityRules": "[parameters('networkSecurityGroupRules')]"
-            }
-        },
-        {
-            "name": "[parameters('publicIpAddressName')]",
-            "type": "Microsoft.Network/publicIpAddresses",
-            "apiVersion": "2023-06-01",
-            "location": "[parameters('location')]",
-            "properties": {
-                "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
-            },
-            "sku": {
-                "name": "[parameters('publicIpAddressSku')]"
-            }
-        },
-        {
-            "name": "[parameters('virtualMachineName')]",
-            "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2024-03-01",
-            "location": "[parameters('location')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]"
-            ],
-            "properties": {
-                "hardwareProfile": {
-                    "vmSize": "[parameters('virtualMachineSize')]"
+                "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
+                "supportsHttpsTrafficOnly": "[parameters('supportsHttpsTrafficOnly')]",
+                "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
+                "allowSharedKeyAccess": "[parameters('allowSharedKeyAccess')]",
+                "defaultToOAuthAuthentication": "[parameters('defaultOAuth')]",
+                "accessTier": "[parameters('accessTier')]",
+                "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+                "allowCrossTenantReplication": "[parameters('allowCrossTenantReplication')]",
+                "networkAcls": {
+                    "bypass": "[parameters('networkAclsBypass')]",
+                    "defaultAction": "[parameters('networkAclsDefaultAction')]",
+                    "ipRules": "[parameters('networkAclsIpRules')]",
+                    "ipv6Rules": "[parameters('networkAclsIpv6Rules')]"
                 },
-                "storageProfile": {
-                    "osDisk": {
-                        "createOption": "fromImage",
-                        "managedDisk": {
-                            "storageAccountType": "[parameters('osDiskType')]"
+                "dualStackEndpointPreference": {
+                    "publishIpv6Endpoint": "[parameters('publishIpv6Endpoint')]"
+                },
+                "dnsEndpointType": "[parameters('dnsEndpointType')]",
+                "encryption": {
+                    "keySource": "[parameters('keySource')]",
+                    "services": {
+                        "blob": {
+                            "enabled": "[parameters('encryptionEnabled')]"
                         },
-                        "deleteOption": "[parameters('osDiskDeleteOption')]"
+                        "file": {
+                            "enabled": "[parameters('encryptionEnabled')]"
+                        },
+                        "table": {
+                            "enabled": "[parameters('encryptionEnabled')]"
+                        },
+                        "queue": {
+                            "enabled": "[parameters('encryptionEnabled')]"
+                        }
                     },
-                    "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2025-datacenter-azure-edition",
-                        "version": "latest"
-                    }
+                    "requireInfrastructureEncryption": "[parameters('infrastructureEncryptionEnabled')]"
+                }
+            },
+            "dependsOn": [],
+            "sku": {
+                "name": "[parameters('accountType')]"
+            },
+            "kind": "[parameters('kind')]",
+            "tags": {}
+        },
+        {
+            "name": "[concat(parameters('storageAccountName'), '/default')]",
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2025-06-01",
+            "properties": {
+                "deleteRetentionPolicy": {
+                    "enabled": "[parameters('isBlobSoftDeleteEnabled')]",
+                    "days": "[parameters('blobSoftDeleteRetentionDays')]"
                 },
-                "networkProfile": {
-                    "networkInterfaces": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]",
-                            "properties": {
-                                "deleteOption": "[parameters('nicDeleteOption')]"
-                            }
-                        }
-                    ]
-                },
-                "securityProfile": {
-                    "securityType": "[parameters('securityType')]",
-                    "uefiSettings": {
-                        "secureBootEnabled": "[parameters('secureBoot')]",
-                        "vTpmEnabled": "[parameters('vTPM')]"
-                    }
-                },
-                "additionalCapabilities": {
-                    "hibernationEnabled": false
-                },
-                "osProfile": {
-                    "computerName": "[parameters('virtualMachineComputerName')]",
-                    "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]",
-                    "windowsConfiguration": {
-                        "enableAutomaticUpdates": true,
-                        "provisionVmAgent": true,
-                        "patchSettings": {
-                            "patchMode": "[parameters('patchMode')]",
-                            "assessmentMode": "[parameters('enablePeriodicAssessment')]",
-                            "enableHotpatching": "[parameters('enableHotpatching')]",
-                            "automaticByPlatformSettings": {
-                                "rebootSetting": "[parameters('rebootSetting')]"
-                            }
-                        }
-                    }
-                },
-                "licenseType": "Windows_Server"
-            }
+                "containerDeleteRetentionPolicy": {
+                    "enabled": "[parameters('isContainerSoftDeleteEnabled')]",
+                    "days": "[parameters('containerSoftDeleteRetentionDays')]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('storageAccountName'), '/default')]",
+            "type": "Microsoft.Storage/storageAccounts/fileservices",
+            "apiVersion": "2025-06-01",
+            "properties": {
+                "protocolSettings": null,
+                "shareDeleteRetentionPolicy": {
+                    "enabled": "[parameters('isShareSoftDeleteEnabled')]",
+                    "days": "[parameters('shareSoftDeleteRetentionDays')]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]",
+                "[concat(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), '/blobServices/default')]"
+            ]
         }
     ],
-    "outputs": {
-        "adminUsername": {
-            "type": "string",
-            "value": "[parameters('adminUsername')]"
-        }
-    }
+    "outputs": {}
 }

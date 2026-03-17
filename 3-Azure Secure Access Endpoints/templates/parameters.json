@@ -5,100 +5,86 @@
         "location": {
             "value": "eastus"
         },
-        "networkInterfaceName": {
-            "value": "storagevmwjacb750"
+        "storageAccountName": {
+            "value": "storagetest2703"
         },
-        "enableAcceleratedNetworking": {
+        "accountType": {
+            "value": "Standard_LRS"
+        },
+        "kind": {
+            "value": "StorageV2"
+        },
+        "minimumTlsVersion": {
+            "value": "TLS1_2"
+        },
+        "supportsHttpsTrafficOnly": {
             "value": true
         },
-        "networkSecurityGroupName": {
-            "value": "storagevmwjacb-nsg"
-        },
-        "networkSecurityGroupRules": {
-            "value": [
-                {
-                    "name": "RDP",
-                    "properties": {
-                        "priority": 300,
-                        "protocol": "TCP",
-                        "access": "Allow",
-                        "direction": "Inbound",
-                        "sourceAddressPrefix": "*",
-                        "sourcePortRange": "*",
-                        "destinationAddressPrefix": "*",
-                        "destinationPortRange": "3389"
-                    }
-                }
-            ]
-        },
-        "subnetName": {
-            "value": "default"
-        },
-        "virtualNetworkId": {
-            "value": "/subscriptions/52e53aef-f637-4750-9088-82136dedff07/resourceGroups/storagetest/providers/Microsoft.Network/virtualNetworks/storagevnet"
-        },
-        "publicIpAddressName": {
-            "value": "storagevmwjacb-ip"
-        },
-        "publicIpAddressType": {
-            "value": "Static"
-        },
-        "publicIpAddressSku": {
-            "value": "Standard"
-        },
-        "pipDeleteOption": {
-            "value": "Detach"
-        },
-        "virtualMachineName": {
-            "value": "storagevmwjacb"
-        },
-        "virtualMachineComputerName": {
-            "value": "storagevmwjacb"
-        },
-        "virtualMachineRG": {
-            "value": "storagetest"
-        },
-        "osDiskType": {
-            "value": "Premium_LRS"
-        },
-        "osDiskDeleteOption": {
-            "value": "Delete"
-        },
-        "virtualMachineSize": {
-            "value": "Standard_D2s_v3"
-        },
-        "nicDeleteOption": {
-            "value": "Detach"
-        },
-        "hibernationEnabled": {
+        "allowBlobPublicAccess": {
             "value": false
         },
-        "adminUsername": {
-            "value": "storageadmin"
-        },
-        "adminPassword": {
-            "value": "OZ9Cle03WK6RgeBX"
-        },
-        "patchMode": {
-            "value": "AutomaticByPlatform"
-        },
-        "enablePeriodicAssessment": {
-            "value": "ImageDefault"
-        },
-        "enableHotpatching": {
+        "allowSharedKeyAccess": {
             "value": true
         },
-        "rebootSetting": {
-            "value": "IfRequired"
+        "defaultOAuth": {
+            "value": false
         },
-        "securityType": {
-            "value": "TrustedLaunch"
+        "accessTier": {
+            "value": "Hot"
         },
-        "secureBoot": {
+        "publicNetworkAccess": {
+            "value": "Enabled"
+        },
+        "allowCrossTenantReplication": {
+            "value": false
+        },
+        "networkAclsBypass": {
+            "value": "AzureServices"
+        },
+        "networkAclsDefaultAction": {
+            "value": "Allow"
+        },
+        "networkAclsIpRules": {
+            "value": []
+        },
+        "networkAclsIpv6Rules": {
+            "value": []
+        },
+        "publishIpv6Endpoint": {
+            "value": false
+        },
+        "dnsEndpointType": {
+            "value": "Standard"
+        },
+        "keySource": {
+            "value": "Microsoft.Storage"
+        },
+        "encryptionEnabled": {
             "value": true
         },
-        "vTPM": {
+        "keyTypeForTableAndQueueEncryption": {
+            "value": "Account"
+        },
+        "infrastructureEncryptionEnabled": {
+            "value": false
+        },
+        "isBlobSoftDeleteEnabled": {
             "value": true
+        },
+        "blobSoftDeleteRetentionDays": {
+            "value": 7
+        },
+        "isContainerSoftDeleteEnabled": {
+            "value": true
+        },
+        "containerSoftDeleteRetentionDays": {
+            "value": 7
+        },
+        "isShareSoftDeleteEnabled": {
+            "value": true
+        },
+        "shareSoftDeleteRetentionDays": {
+            "value": 7
         }
     }
 }
