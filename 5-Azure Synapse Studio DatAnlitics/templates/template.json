@@ -1,0 +1,78 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.5.0.0",
+    "parameters": {
+        "name": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "apiVersion": {
+            "type": "string"
+        },
+        "sku": {
+            "type": "string"
+        },
+        "jobType": {
+            "defaultValue": "Cloud",
+            "type": "string"
+        },
+        "contentStoragePolicy": {
+            "defaultValue": "SystemAccount",
+            "type": "string"
+        },
+        "compatibilityLevel": {
+            "type": "string"
+        },
+        "jobStorageAccount": {
+            "type": "object"
+        },
+        "transformation": {
+            "type": "object"
+        },
+        "enableMsi": {
+            "type": "bool"
+        },
+        "addStorage": {
+            "type": "bool"
+        },
+        "addTransformation": {
+            "type": "bool"
+        },
+        "identity": {
+            "type": "object",
+            "defaultValue": {
+                "type": "SystemAssigned"
+            }
+        },
+        "tags": {
+            "type": "object"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "[parameters('apiVersion')]",
+            "name": "[parameters('name')]",
+            "location": "[parameters('location')]",
+            "type": "Microsoft.StreamAnalytics/StreamingJobs",
+            "identity": "[if(parameters('enableMsi'), parameters('identity'), json('null'))]",
+            "tags": "[parameters('tags')]",
+            "properties": {
+                "sku": {
+                    "name": "[parameters('sku')]"
+                },
+                "outputErrorPolicy": "stop",
+                "eventsOutOfOrderPolicy": "adjust",
+                "eventsOutOfOrderMaxDelayInSeconds": 0,
+                "eventsLateArrivalMaxDelayInSeconds": 5,
+                "contentStoragePolicy": "[parameters('contentStoragePolicy')]",
+                "jobType": "[parameters('jobType')]",
+                "dataLocale": "en-US",
+                "transformation": "[if(parameters('addTransformation'), parameters('transformation'), json('null'))]",
+                "jobStorageAccount": "[if(parameters('addStorage'), parameters('jobStorageAccount'), json('null'))]",
+                "compatibilityLevel": "[parameters('compatibilityLevel')]"
+            }
+        }
+    ]
+}

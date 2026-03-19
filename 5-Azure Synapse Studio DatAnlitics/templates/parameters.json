@@ -1,0 +1,63 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "value": "Stream2703"
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "apiVersion": {
+            "value": "2021-10-01-preview"
+        },
+        "compatibilityLevel": {
+            "value": "1.2"
+        },
+        "jobType": {
+            "value": "Cloud"
+        },
+        "sku": {
+            "value": "StandardV2"
+        },
+        "contentStoragePolicy": {
+            "value": "SystemAccount"
+        },
+        "transformation": {
+            "value": {
+                "name": "Transformation",
+                "properties": {
+                    "streamingUnits": 10,
+                    "query": "/*\nHere are links to help you get started with Stream Analytics Query Language:\r\nCommon query patterns - https://go.microsoft.com/fwLink/?LinkID=619153\r\nQuery language - https://docs.microsoft.com/stream-analytics-query/query-language-elements-azure-stream-analytics*/\n"
+                }
+            }
+        },
+        "enableMsi": {
+            "value": true
+        },
+        "addTransformation": {
+            "value": true
+        },
+        "addStorage": {
+            "value": false
+        },
+        "identity": {
+            "value": {
+                "type": "SystemAssigned",
+                "userAssignedIdentities": null
+            }
+        },
+        "tags": {
+            "value": {
+                "hidden-link:/Microsoft.StreamAnalytics/streamingjobs/settings": "{\"createdFrom\":\"Portal\"}"
+            }
+        },
+        "jobStorageAccount": {
+            "value": {
+                "accountName": "",
+                "authenticationMode": "ConnectionString",
+                "accountKey": null
+            }
+        }
+    }
+}
